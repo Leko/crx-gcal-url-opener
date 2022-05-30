@@ -62,8 +62,13 @@ function App() {
     [eventMap]
   );
   const eventsOnToday = useMemo(
-    () => events.filter((event) => isSameDay(event.startsAt, mountedAt)),
-    [events]
+    () =>
+      events.filter(
+        (event) =>
+          isSameDay(event.startsAt, mountedAt) &&
+          event.startsAt.getTime() > mountedAt.getTime()
+      ),
+    [events, mountedAt]
   );
   const eventsOnTodayIds = useMemo(
     () => new Set(eventsOnToday.map((event) => event.id)),
