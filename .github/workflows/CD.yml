@@ -1,0 +1,23 @@
+name: GitHub Actions Demo
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm run build
+      - run: npx chrome-webstore-upload-cli upload --source dist.zip
+        env:
+          EXTENSION_ID: ${{ secrets.GOOGLE_WEBSTORE_EXTENSION_ID }}
+          CLIENT_ID: ${{ secrets.GOOGLE_WEBSTORE_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.GOOGLE_WEBSTORE_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.GOOGLE_WEBSTORE_REFRESH_TOKEN }}

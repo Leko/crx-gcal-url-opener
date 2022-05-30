@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "crx-gcal-url-opener",
+  "version": "0.0.1",
+  "description": "Chrome extension that automatically opens Google Calendar meet links and event URLs",
+  "permissions": ["alarms", "identity", "identity.email", "storage"],
+  "content_security_policy": {},
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "oauth2": {
+    "client_id": "589235259206-m75joat1dagd513h0vgsvuhgo8r2bgfu.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/calendar.events.readonly"
+    ]
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgc3poz04XFD1oqDacIWYKTzIPfg0cEIh5kobaDqG+JYCbLvxYdlX2jXICWIAJR0E6AEdSzDWy2wlc4LPrVpGIZBy5K0f4nb+R7SdiJxOcWLQI8pNRgHnodT2mkdSy8gHRUvbZjT9ulG87tslugQazCluK0dk8DElLyTO1Aijw70+xySHxXxeH4CrDPA+aEeq9dDUsMMIi651/wik5GPcRIHgADbQj5iW8Z4l3PPAADCtsYKKyvLDqbDwg6mcJcGSz6A0mKHs27eMtw3shRdd+LhwN35InDGfo4u9hwL4nX6Ty5JUi8ipUUKu51WJpbNczotJqWedB1L9fB1DEvPDYwIDAQAB"
+}
