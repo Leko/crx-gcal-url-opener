@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+const fs = require("fs");
+const path = require("path");
+const pkg = require("../package.json");
+const manifest = require("../public/manifest.json");
+
+manifest.version = pkg.version;
+
+fs.writeFileSync(
+  path.join(__dirname, "..", "public", "manifest.json"),
+  JSON.stringify(manifest, null, 2) + "\n"
+);
