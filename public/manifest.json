@@ -1,9 +1,14 @@
 {
   "manifest_version": 3,
   "name": "crx-gcal-url-opener",
-  "version": "0.0.1",
+  "version": "0.2.1",
   "description": "Chrome extension that automatically opens Google Calendar meet links and event URLs",
-  "permissions": ["alarms", "identity", "identity.email", "storage"],
+  "permissions": [
+    "alarms",
+    "identity",
+    "identity.email",
+    "storage"
+  ],
   "content_security_policy": {},
   "action": {
     "default_popup": "popup.html"
