@@ -152,7 +152,11 @@ chrome.alarms.onAlarm.addListener(async (alerm) => {
       ]);
       const url = new URL(event.url);
       url.searchParams.set("authuser", email);
-      await chrome.tabs.create({ url: url.toString() });
+      const tab = await chrome.tabs.create({ url: url.toString() });
+      await chrome.windows.update(tab.windowId, {
+        focused: true,
+        drawAttention: true,
+      });
     }
   }
 });
