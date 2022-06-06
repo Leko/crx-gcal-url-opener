@@ -15,7 +15,7 @@ jobs:
           node-version: 16
       - run: npm ci
       - run: npm run build
-      - run: npx chrome-webstore-upload-cli upload --source dist.zip
+      - run: npx chrome-webstore-upload-cli upload --source dist.zip --auto-publish
         env:
           EXTENSION_ID: ${{ secrets.GOOGLE_WEBSTORE_EXTENSION_ID }}
           CLIENT_ID: ${{ secrets.GOOGLE_WEBSTORE_CLIENT_ID }}
