@@ -3,7 +3,7 @@
   "version": "0.2.1",
   "description": "Chrome extension that automatically opens Google Calendar meet links and event URLs",
   "scripts": {
-    "postversion": "node ./scripts/sync-pkg-version",
+    "preversion": "node ./scripts/bump-manifest $npm_package_version",
     "prebuild": "rm -rf dist dist.zip",
     "build": "webpack",
     "postbuild": "zip -r dist.zip dist",
