@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import {
+  Alert,
   AppBar,
   Box,
   Container,
@@ -18,6 +19,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import RepeatIcon from "@mui/icons-material/Repeat";
 import OpenInNew from "@mui/icons-material/OpenInNew";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { getAuthToken } from "./auth";
 
 type Event = {
   id: string;
@@ -48,6 +50,7 @@ function relativeDuration(duration: number) {
 
 function App() {
   const [mountedAt] = useState(new Date());
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [eventMap, setEventMap] = useState(new Map<string, Event>());
   const events = useMemo(
     () =>
@@ -102,8 +105,16 @@ function App() {
   }, [listReminders]);
 
   useEffect(() => {
-    listReminders();
+    getAuthToken(false)
+      .then(
+        () => true,
+        () => false
+      )
+      .then(setIsAuthenticated);
   }, []);
+  useEffect(() => {
+    listReminders();
+  }, [isAuthenticated]);
 
   return (
     <div style={{ width: 320 }}>
@@ -111,84 +122,104 @@ function App() {
         <Toolbar>
           <Typography variant="subtitle1">gcal-url-opener</Typography>
           <div style={{ flexGrow: 1 }} />
-          <Tooltip title="Refresh">
-            <IconButton onClick={handleRefresh}>
-              <RepeatIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Sign in with Google">
-            <IconButton onClick={handleSignIn}>
-              <LoginIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Sign out">
-            <IconButton onClick={handleSignOut}>
-              <LogoutIcon />
-            </IconButton>
-          </Tooltip>
+          {isAuthenticated ? (
+            <>
+              <Tooltip title="Refresh">
+                <IconButton onClick={handleRefresh}>
+                  <RepeatIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Sign out">
+                <IconButton onClick={handleSignOut}>
+                  <LogoutIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+          ) : (
+            <Tooltip title="Sign in with Google">
+              <IconButton onClick={handleSignIn}>
+                <LoginIcon />
+              </IconButton>
+            </Tooltip>
+          )}
         </Toolbar>
       </AppBar>
       <Container>
         <Typography variant="subtitle1">{events.length} events</Typography>
       </Container>
-      <Box my={2}>
-        <List dense subheader={<ListSubheader>Events on today</ListSubheader>}>
-          {eventsOnToday.map((e) => (
-            <ListItem
-              key={e.id}
-              dense
-              secondaryAction={
-                <IconButton
-                  edge="end"
-                  href={e.url}
-                  target="_blank"
-                  rel="noreferer"
-                >
-                  <OpenInNew />
-                </IconButton>
-              }
-            >
-              <ListItemText
-                primary={`${e.title} in ${relativeDuration(e.startsIn)}`}
-                secondary={e.url}
-              />
-            </ListItem>
-          ))}
-          {eventsOnToday.length === 0 ? (
-            <ListItem dense>
-              <ListItemText primary={`No more events today.`} />
-            </ListItem>
-          ) : null}
-        </List>
-        <List dense subheader={<ListSubheader>Upcoming events</ListSubheader>}>
-          {upcomingEvents.map((e) => (
-            <ListItem
-              key={e.id}
-              dense
-              secondaryAction={
-                <IconButton
-                  edge="end"
-                  href={e.url}
-                  target="_blank"
-                  rel="noreferer"
-                >
-                  <OpenInNew />
-                </IconButton>
-              }
-            >
-              <ListItemText
-                primary={`${e.title} in ${relativeDuration(e.startsIn)}`}
-                secondary={e.url}
-              />
-            </ListItem>
-          ))}
-          {upcomingEvents.length === 0 ? (
-            <ListItem dense>
-              <ListItemText primary={`No more upcoming events.`} />
-            </ListItem>
-          ) : null}
-        </List>
-      </Box>
+      {isAuthenticated ? (
+        <Box my={2}>
+          <List
+            dense
+            subheader={<ListSubheader>Events on today</ListSubheader>}
+          >
+            {eventsOnToday.map((e) => (
+              <ListItem
+                key={e.id}
+                dense
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    href={e.url}
+                    target="_blank"
+                    rel="noreferer"
+                  >
+                    <OpenInNew />
+                  </IconButton>
+                }
+              >
+                <ListItemText
+                  primary={`${e.title} in ${relativeDuration(e.startsIn)}`}
+                  secondary={e.url}
+                />
+              </ListItem>
+            ))}
+            {eventsOnToday.length === 0 ? (
+              <ListItem dense>
+                <ListItemText primary={`No more events today.`} />
+              </ListItem>
+            ) : null}
+          </List>
+          <List
+            dense
+            subheader={<ListSubheader>Upcoming events</ListSubheader>}
+          >
+            {upcomingEvents.map((e) => (
+              <ListItem
+                key={e.id}
+                dense
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    href={e.url}
+                    target="_blank"
+                    rel="noreferer"
+                  >
+                    <OpenInNew />
+                  </IconButton>
+                }
+              >
+                <ListItemText
+                  primary={`${e.title} in ${relativeDuration(e.startsIn)}`}
+                  secondary={e.url}
+                />
+              </ListItem>
+            ))}
+            {upcomingEvents.length === 0 ? (
+              <ListItem dense>
+                <ListItemText primary={`No more upcoming events.`} />
+              </ListItem>
+            ) : null}
+          </List>
+        </Box>
+      ) : (
+        <Box my={2} pt={2}>
+          <Alert color="warning">
+            You are not logged in to Google. Please log in with the Google
+            account you wish to link your calendar to.
+          </Alert>
+        </Box>
+      )}
     </div>
   );
 }

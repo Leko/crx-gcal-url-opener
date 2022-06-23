@@ -108,11 +108,9 @@ async function registerReminder(event: ScheduledEvent) {
   const startsAt = new Date(event.startsAt);
   await chrome.alarms.clear(event.id);
   await Promise.all([
-    chrome.alarms.clear(event.id).then(() =>
-      chrome.alarms.create(event.id, {
-        when: startsAt.getTime() - config.offset,
-      })
-    ),
+    chrome.alarms.create(event.id, {
+      when: startsAt.getTime() - config.offset,
+    }),
     upsertEvent(event.id, event),
   ]);
 }
