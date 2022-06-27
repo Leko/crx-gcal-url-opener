@@ -8,6 +8,7 @@ import {
   markAsOpened,
   ScheduledEvent,
   upsertEvent,
+  clearAll as clearAllEvents,
 } from "./storage";
 
 type ListAccountRequest = { type: "ListAccountRequest" };
@@ -98,6 +99,7 @@ async function startWatching() {
       matched.filter((e) => isSameDay(new Date(e.startsAt), new Date())).length
     ),
   });
+  await Promise.all([chrome.alarms.clearAll(), clearAllEvents()]);
   for (const event of matched) {
     await registerReminder(event);
   }
