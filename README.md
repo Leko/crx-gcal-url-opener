@@ -12,6 +12,7 @@ This is a Chrome extension that automatically opens the URL set in your calendar
 1. Install [the extension on the Chrome Web Store](https://chrome.google.com/webstore/detail/crx-gcal-url-opener/pjginhohpenlemfdcjbahjbhnpinfnlm?hl=ja)
 2. Click the popup icon
 3. Please sign in with the Google account you wish to link your calendar to
+    - This OAuth application is under review by Google. Until the review is complete, a warning screen will appear after granting permissions
 4. You're all set! Events are automatically and regularly updated. You won't have to click the refresh button unless you want to retrieve the latest events immediately.
 
 ## Development
