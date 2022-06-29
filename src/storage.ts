@@ -9,12 +9,6 @@ export type ScheduledEvent = {
 const KEY_EVETNS = "events_1";
 const KEY_OPENED = "opened";
 
-export async function clearAll() {
-  return chrome.storage.local.set({
-    [KEY_EVETNS]: JSON.stringify([]),
-  });
-}
-
 export async function upsertEvent(
   id: string,
   newValue: ScheduledEvent
