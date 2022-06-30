@@ -1,5 +1,5 @@
 import { getAuthToken, getProfileUserInfo } from "./auth";
-import { listAllEvents } from "./calendar";
+import { isFutureEvent, listAllEvents, willParticipate } from "./calendar";
 import { loadConfig } from "./config";
 import {
   getAllEvents,
@@ -27,12 +27,19 @@ let loading = Promise.resolve();
 async function dispatch(message: IncomingMessage) {
   switch (message.type) {
     case "SignInRequest":
-      return getProfileUserInfo();
+      await getProfileUserInfo();
+      loading = startWatching();
+      return;
     case "SignOutRequest": {
       const token = await getAuthToken();
       await Promise.all([
         fetch(`https://accounts.google.com/o/oauth2/revoke?token=${token}`),
-        chrome.identity.removeCachedAuthToken({ token }),
+        new Promise<void>((resolve) =>
+          chrome.identity.removeCachedAuthToken({ token }, resolve)
+        ),
+        new Promise<void>((resolve) =>
+          chrome.identity.clearAllCachedAuthTokens(resolve)
+        ),
       ]);
       return;
     }
@@ -46,11 +53,6 @@ async function dispatch(message: IncomingMessage) {
   }
 }
 
-function parseUrls(event: any): string[] {
-  return [event.hangoutLink]
-    .concat(event.description?.match(/(https?:\/\/[^ ]+)/g) ?? [])
-    .filter(Boolean);
-}
 function isSameDay(a: Date, b: Date) {
   return (
     a.getFullYear() === b.getFullYear() &&
@@ -70,29 +72,25 @@ async function startWatching() {
   const matched = allEvents
     .filter(
       (e) =>
-        e.status !== "cancelled" &&
-        e.attendees?.find((a: any) => a.email === user.email)
-          ?.responseStatus !== "declined" &&
-        e.start?.dateTime &&
-        new Date(e.start.dateTime).getTime() > Date.now() &&
-        (e.hangoutLink ||
-          parseUrls(e).some((url) =>
-            config.urlAllowList.some((allow) => url.startsWith(allow))
-          ))
+        willParticipate(e, user.email) &&
+        isFutureEvent(e) &&
+        !!config.extractValidUrl(e)
     )
-    .map(
-      (event): ScheduledEvent => ({
+    .map((event): ScheduledEvent => {
+      let { url, rule } = config.extractValidUrl(event)!;
+      if (rule.provider === "Google Meet") {
+        const tmp = new URL(url);
+        tmp.searchParams.set("authuser", user.email);
+        url = tmp.toString();
+      }
+      return {
         id: event.id,
         title: event.summary,
         startsAt: event.start?.dateTime ?? null,
         endsAt: event.end?.dateTime ?? null,
-        url: event.hangoutLink
-          ? `${event.hangoutLink}?authuser=${user.email}`
-          : parseUrls(event).find((url) =>
-              config.urlAllowList.some((allow) => url.startsWith(allow))
-            )!,
-      })
-    );
+        url: url!,
+      };
+    });
   await chrome.action.setBadgeText({
     text: String(
       matched.filter((e) => isSameDay(new Date(e.startsAt), new Date())).length
@@ -144,13 +142,7 @@ chrome.alarms.onAlarm.addListener(async (alerm) => {
         return;
       }
       await markAsOpened(alerm.name);
-      const [{ email }] = await Promise.all([
-        getProfileUserInfo(),
-        loadConfig(),
-      ]);
-      const url = new URL(event.url);
-      url.searchParams.set("authuser", email);
-      const tab = await chrome.tabs.create({ url: url.toString() });
+      const tab = await chrome.tabs.create({ url: event.url });
       await chrome.windows.update(tab.windowId, {
         focused: true,
         drawAttention: true,

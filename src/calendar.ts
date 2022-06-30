@@ -1,3 +1,11 @@
+type Event = {
+  status?: string;
+  attendees?: { responseStatus: string }[];
+  start?: {
+    dateTime: string;
+  };
+};
+
 const HOST = `https://www.googleapis.com/calendar/v3`;
 
 export async function listAllEvents(accessToken: string, email: string) {
@@ -12,6 +20,20 @@ export async function listAllEvents(accessToken: string, email: string) {
     syncToken = res.nextSyncToken;
   }
   return allEvents;
+}
+
+export function willParticipate(event: Event, selfEmail: string): boolean {
+  return !!(
+    event.status !== "cancelled" &&
+    event.attendees?.find((a: any) => a.email === selfEmail)?.responseStatus !==
+      "declined"
+  );
+}
+export function isFutureEvent(event: Event): boolean {
+  return !!(
+    event.start?.dateTime &&
+    new Date(event.start.dateTime).getTime() > Date.now()
+  );
 }
 
 async function listEvents(
