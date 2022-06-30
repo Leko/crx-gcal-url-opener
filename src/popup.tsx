@@ -61,6 +61,7 @@ function App() {
   }, []);
   const handleSignOut = useCallback(() => {
     chrome.runtime.sendMessage({ type: "SignOutRequest" });
+    setIsAuthenticated(false);
   }, []);
   const listReminders = useCallback(() => {
     chrome.runtime.sendMessage({ type: "ListReminders" }).then((res) => {
