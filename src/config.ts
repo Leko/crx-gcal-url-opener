@@ -20,7 +20,7 @@ const urlRules = [
     test: /^https:\/\/meet.google.com\//,
     provider: "Google Meet",
   },
-] as const;
+];
 
 export async function loadConfig(): Promise<Config> {
   return new Config({
