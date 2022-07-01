@@ -127,4 +127,5 @@ function Root() {
   );
 }
 
+// @ts-expect-error createRoot is experimental
 ReactDOM.createRoot(document.getElementById("root")).render(<Root />);
