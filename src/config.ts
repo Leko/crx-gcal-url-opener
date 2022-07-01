@@ -1,3 +1,5 @@
+import getUrls from "get-urls";
+
 type URLRules = typeof urlRules;
 type URLRule = URLRules[number];
 
@@ -45,9 +47,9 @@ class Config {
     url: string;
     rule: URLRule;
   } | null {
-    const urls: string[] =
-      event.description?.match(/(https?:\/\/[^ \r\n]+)/gm) ?? [];
-
+    const urls: string[] = [
+      ...getUrls(event.description ?? "", { requireSchemeOrWww: false }),
+    ];
     for (const rule of this.urlRules) {
       for (const url of urls) {
         if (rule.test.test(url)) {
