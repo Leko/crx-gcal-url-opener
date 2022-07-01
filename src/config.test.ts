@@ -24,14 +24,14 @@ describe("Config", () => {
       expect(
         config.extractValidUrl({
           hangoutLink: "https://meet.google.com/xxx",
-          description: "https://teams.microsoft.com/l/meetup-join/",
+          description: "https://teams.microsoft.com/l/meetup-join/xxx",
         })
       ).toMatchObject({ rule: { provider: "Microsoft Teams" } });
       expect(
         config.extractValidUrl({
           description: [
             "https://meet.google.com/xxx",
-            "https://teams.microsoft.com/l/meetup-join/",
+            "https://teams.microsoft.com/l/meetup-join/xxx",
           ].join("\n"),
         })
       ).toMatchObject({ rule: { provider: "Microsoft Teams" } });
