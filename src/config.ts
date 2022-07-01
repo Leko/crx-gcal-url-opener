@@ -9,15 +9,15 @@ type SerializedConfig = {
 
 const urlRules = [
   {
-    test: /^https:\/\/us02web.zoom.us\/j\//,
+    test: /^https:\/\/(?:[^\.]+\.)?zoom\.us\/j\//,
     provider: "Zoom Meetings",
   },
   {
-    test: /https:\/\/teams.microsoft.com\/l\/meetup-join\//,
+    test: /https:\/\/teams\.microsoft\.com\/l\/meetup-join\//,
     provider: "Microsoft Teams",
   },
   {
-    test: /^https:\/\/meet.google.com\//,
+    test: /^https:\/\/meet\.google\.com\//,
     provider: "Google Meet",
   },
 ];
@@ -46,12 +46,13 @@ class Config {
     rule: URLRule;
   } | null {
     const urls: string[] =
-      event.description?.match(/(https?:\/\/[^ ]+)/g) ?? [];
+      event.description?.match(/(https?:\/\/[^ \r\n]+)/gm) ?? [];
 
-    for (const url of urls) {
-      const rule = this.urlRules.find((rule) => rule.test.test(url));
-      if (rule) {
-        return { rule, url };
+    for (const rule of this.urlRules) {
+      for (const url of urls) {
+        if (rule.test.test(url)) {
+          return { rule, url };
+        }
       }
     }
     if (event.hangoutLink) {
