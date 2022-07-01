@@ -7,7 +7,7 @@
     "test": "vitest run",
     "preversion": "node ./scripts/bump-manifest $npm_new_version && git add public/manifest.json",
     "prebuild": "rm -rf dist dist.zip",
-    "build": "webpack",
+    "build": "tsc --noEmit && webpack",
     "postbuild": "zip -r dist.zip dist",
     "dev": "webpack --watch"
   },
@@ -16,8 +16,8 @@
   "license": "MIT",
   "devDependencies": {
     "@types/chrome": "^0.0.184",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.3",
+    "@types/react": "^18.0.14",
+    "@types/react-dom": "^18.0.5",
     "chrome-webstore-upload-cli": "^2.1.0",
     "copy-webpack-plugin": "^10.2.4",
     "html-webpack-plugin": "^5.5.0",
