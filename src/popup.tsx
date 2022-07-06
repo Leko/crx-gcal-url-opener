@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
-import { Alert, Box, Container, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, Typography } from "@mui/material";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { getAuthToken } from "./auth";
 import { AppBar } from "./components/AppBar";
@@ -97,7 +97,6 @@ function App() {
         isAuthenticated={isAuthenticated}
         onRefresh={handleRefresh}
         onSignOut={handleSignOut}
-        onSignIn={handleSignIn}
       />
       <Container>
         <Typography variant="subtitle1">{events.length} events</Typography>
@@ -112,6 +111,13 @@ function App() {
           <Alert color="warning">
             You are not logged in to Google. Please log in with the Google
             account you wish to link your calendar to.
+            <Button onClick={handleSignIn} variant="text">
+              <img
+                src="btn_google_signin_dark_normal_web@2x.png"
+                height="48"
+                style={{ maxWidth: "100%", marginTop: 8 }}
+              />
+            </Button>
           </Alert>
         </Box>
       )}
