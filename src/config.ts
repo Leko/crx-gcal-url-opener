@@ -43,7 +43,7 @@ class Config {
     this.pollInterval = init.pollInterval;
   }
 
-  extractValidUrl(event: { hangoutLink?: string; description?: string }): {
+  extractValidUrl(event: { hangoutLink?: string; description?: string; conferenceData?: any }): {
     url: string;
     rule: URLRule;
   } | null {
@@ -54,6 +54,18 @@ class Config {
       for (const url of urls) {
         if (rule.test.test(url)) {
           return { rule, url };
+        }
+      }
+    }
+    if (event.conferenceData) {
+      const videoEntryPoint = event.conferenceData.entryPoints?.filter((ep: any) => ep.entryPointType === "video");
+      if (videoEntryPoint?.length) {
+        const matchedRule = urlRules.filter(rule => rule.test.test(videoEntryPoint[0].uri));
+        if (matchedRule.length) {
+          return {
+            url: videoEntryPoint[0].uri,
+            rule: matchedRule[0]
+          };
         }
       }
     }

@@ -44,6 +44,37 @@ describe("Config", () => {
         })
       ).toMatchObject({ rule: { provider: "Google Meet" } });
     });
+    it("can extract Google Meet URL from conferenceData", async () => {
+      const config = await loadConfig();
+      expect(
+        config.extractValidUrl({
+          conferenceData: {
+            entryPoints: [
+              {
+                entryPointType: "video",
+                uri: "https://meet.google.com/xxx"
+              }
+            ]
+          }
+        })
+      ).toMatchObject({ rule: { provider: "Google Meet" } });
+    });
+    it("can extract Microsoft Teams URL from conferenceData", async () => {
+      const config = await loadConfig();
+      expect(
+        config.extractValidUrl({
+          conferenceData: {
+            entryPoints: [
+              {
+                entryPointType: "video",
+                uri: "https://teams.microsoft.com/l/meetup-join/xxx"
+              }
+            ]
+          }
+        })
+      ).toMatchObject({ rule: { provider: "Microsoft Teams" } });
+    });
+
     it.each([
       // Without subdomains
       "https://zoom.us/j/xxx",
