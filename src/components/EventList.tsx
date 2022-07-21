@@ -33,6 +33,13 @@ function relativeDuration(duration: number) {
   return `${(mins / 60 / 24).toFixed(1)} days`;
 }
 
+const URL_MAX_DISPLAY_LENGTH: number = 75;
+function truncate(source: string): string {
+  return source.length > URL_MAX_DISPLAY_LENGTH
+    ? `${source.substring(0, URL_MAX_DISPLAY_LENGTH - 3)}...`
+    : source;
+}
+
 export function EventList(props: Props) {
   const { subheader, events } = props;
 
@@ -50,7 +57,7 @@ export function EventList(props: Props) {
         >
           <ListItemText
             primary={`${e.title} in ${relativeDuration(e.startsIn)}`}
-            secondary={e.url}
+            secondary={truncate(e.url)}
           />
         </ListItem>
       ))}
