@@ -44,7 +44,7 @@ async function dispatch(message: IncomingMessage) {
       return;
     }
     case "RefreshRequest":
-      return loading.then(() => startWatching);
+      return loading.then(() => startWatching());
     case "ListReminders": {
       return [...(await getAllEvents()).values()];
     }
