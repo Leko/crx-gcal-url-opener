@@ -51,6 +51,14 @@ export function EventList(props: Props) {
           <ListItemText
             primary={`${e.title} in ${relativeDuration(e.startsIn)}`}
             secondary={e.url}
+            secondaryTypographyProps={{
+              style: {
+                overflow: "hidden",
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 2
+              }
+            }}
           />
         </ListItem>
       ))}
