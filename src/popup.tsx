@@ -52,7 +52,11 @@ function App() {
     [eventsOnToday]
   );
   const upcomingEvents = useMemo(
-    () => events.filter((event) => !eventsOnTodayIds.has(event.id)),
+    () => events.filter((event) => !eventsOnTodayIds.has(event.id) && event.startsAt.getTime() > mountedAt.getTime()),
+    [events, eventsOnTodayIds]
+  );
+  const pastEvents = useMemo(
+    () => events.filter((event) => event.startsAt.getTime() <= mountedAt.getTime()).reverse(),
     [events, eventsOnTodayIds]
   );
 
@@ -105,6 +109,7 @@ function App() {
         <Box my={2}>
           <EventList subheader={"Events on today"} events={eventsOnToday} />
           <EventList subheader={"Upcoming events"} events={upcomingEvents} />
+          <EventList subheader={"Past events"} events={pastEvents} />
         </Box>
       ) : (
         <Box my={2} pt={2}>
