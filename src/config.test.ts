@@ -52,10 +52,10 @@ describe("Config", () => {
             entryPoints: [
               {
                 entryPointType: "video",
-                uri: "https://meet.google.com/xxx"
-              }
-            ]
-          }
+                uri: "https://meet.google.com/xxx",
+              },
+            ],
+          },
         })
       ).toMatchObject({ rule: { provider: "Google Meet" } });
     });
@@ -67,10 +67,10 @@ describe("Config", () => {
             entryPoints: [
               {
                 entryPointType: "video",
-                uri: "https://teams.microsoft.com/l/meetup-join/xxx"
-              }
-            ]
-          }
+                uri: "https://teams.microsoft.com/l/meetup-join/xxx",
+              },
+            ],
+          },
         })
       ).toMatchObject({ rule: { provider: "Microsoft Teams" } });
     });
