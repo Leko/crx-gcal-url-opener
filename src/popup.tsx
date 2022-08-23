@@ -6,6 +6,7 @@ import { getAuthToken } from "./auth";
 import { AppBar } from "./components/AppBar";
 import { EventList } from "./components/EventList";
 import { URL_PRIVACY_POLICY } from "./constants";
+import googleSigninDarkNormal from "./images/btn_google_signin_dark_normal_web@2x.png";
 
 type Event = {
   id: string;
@@ -114,7 +115,7 @@ function App() {
             account you wish to link your calendar to.
             <Button onClick={handleSignIn} variant="text">
               <img
-                src="./images/btn_google_signin_dark_normal_web@2x.png"
+                src={chrome.runtime.getURL(googleSigninDarkNormal)}
                 height="48"
                 style={{ maxWidth: "100%", marginTop: 8 }}
               />
