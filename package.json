@@ -12,7 +12,7 @@
     "postbuild": "zip -r dist.zip dist",
     "dev": "vite",
     "preview": "vite preview",
-    "release": "gh release create v${npm_package_version} --generate-notes"
+    "release": "git push origin --follow-tags main && gh release create v${npm_package_version} --generate-notes"
   },
   "repository": "Leko/crx-gcal-url-opener",
   "author": "Leko <leko.noor@gmail.com>",
