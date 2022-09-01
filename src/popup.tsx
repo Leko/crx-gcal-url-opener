@@ -55,12 +55,20 @@ function App() {
     [eventsOnToday]
   );
   const upcomingEvents = useMemo(
-    () => events.filter((event) => !eventsOnTodayIds.has(event.id) && event.startsAt.getTime() > mountedAt.getTime()),
+    () =>
+      events.filter(
+        (event) =>
+          !eventsOnTodayIds.has(event.id) &&
+          event.startsAt.getTime() > mountedAt.getTime()
+      ),
     [events, eventsOnTodayIds]
   );
   const pastEvents = useMemo(
-    () => events.filter((event) => event.startsAt.getTime() <= mountedAt.getTime()).reverse(),
-    [events, eventsOnTodayIds]
+    () =>
+      events
+        .filter((event) => event.startsAt.getTime() <= mountedAt.getTime())
+        .reverse(),
+    [events]
   );
 
   const handleSignIn = useCallback(() => {
