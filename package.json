@@ -6,7 +6,7 @@
   "scripts": {
     "test:dev": "vitest",
     "test": "vitest run",
-    "preversion": "node ./scripts/bump-manifest $npm_new_version && git add public/manifest.json",
+    "preversion": "node ./scripts/bump-manifest.cjs $npm_new_version && git add manifest.json",
     "prebuild": "rm -rf dist dist.zip",
     "build": "tsc && vite build",
     "postbuild": "zip -r dist.zip dist",
