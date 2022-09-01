@@ -85,7 +85,7 @@ export function EventList(props: Props) {
           ))}
           {events.length === 0 ? (
             <ListItem dense>
-              <ListItemText primary={`No more upcoming events.`} />
+              <ListItemText primary={`No more upcoming meetings.`} />
             </ListItem>
           ) : null}
         </List>
