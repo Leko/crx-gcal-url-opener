@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import OpenInNew from "@mui/icons-material/OpenInNew";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import { t } from "../i18n";
 
 type Event = {
   id: string;
@@ -46,13 +47,18 @@ export function EventList(props: Props) {
       <AccordionSummary expandIcon={<ExpandMore />}>
         {
           <Typography variant="subtitle2">
-            {subheader}{" "}
-            <Chip variant="filled" label={events.length} size="small" />
+            {subheader}
+            <Chip
+              variant="filled"
+              label={events.length}
+              size="small"
+              sx={{ marginLeft: 1 }}
+            />
           </Typography>
         }
       </AccordionSummary>
       <AccordionDetails>
-        <List disablePadding>
+        <List disablePadding dense>
           {events.map((e) => (
             <ListItem
               key={e.id}
@@ -70,7 +76,10 @@ export function EventList(props: Props) {
               }
             >
               <ListItemText
-                primary={`${e.title} in ${relativeDuration(e.startsIn)}`}
+                primary={t("eventStartsIn", [
+                  e.title,
+                  relativeDuration(e.startsIn),
+                ])}
                 secondary={e.url}
                 secondaryTypographyProps={{
                   style: {
@@ -85,7 +94,7 @@ export function EventList(props: Props) {
           ))}
           {events.length === 0 ? (
             <ListItem dense>
-              <ListItemText primary={`No more upcoming meetings.`} />
+              <ListItemText primary={t("noMoreUpcomingMeetings")} />
             </ListItem>
           ) : null}
         </List>

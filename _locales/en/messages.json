@@ -1,0 +1,20 @@
+{
+  "appName": { "message": "gcal-url-opener" },
+  "refresh": { "message": "Refresh" },
+  "signOut": { "message": "Sign out" },
+  "eventStartsIn": {
+    "message": "$title$ in $startsIn$",
+    "placeholders": {
+      "title": { "content": "$1" },
+      "startsIn": { "content": "$2" }
+    }
+  },
+  "meetingsOnToday": { "message": "Meetings on today" },
+  "upcomingMeetings": { "message": "Upcoming meetings" },
+  "pastMeetings": { "message": "Past meetings" },
+  "noMoreUpcomingMeetings": { "message": "No more upcoming meetings." },
+  "unAuthorized": {
+    "message": "You are not logged in to Google. Please log in with the Google account you wish to link your calendar to."
+  },
+  "privacyPolicy": { "message": "Privacy Policy" }
+}

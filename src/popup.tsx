@@ -8,6 +8,7 @@ import { EventList } from "./components/EventList";
 import { URL_PRIVACY_POLICY } from "./constants";
 import googleSigninDarkNormal from "./images/btn_google_signin_dark_normal_web@2x.png";
 import pkg from "../package.json";
+import { t } from "./i18n";
 
 type Event = {
   id: string;
@@ -113,20 +114,19 @@ function App() {
         onRefresh={handleRefresh}
         onSignOut={handleSignOut}
       />
-      <Container>
-        <Typography variant="subtitle1">{events.length} events</Typography>
-      </Container>
       {isAuthenticated ? (
-        <Box my={4}>
-          <EventList subheader={"Meetings on today"} events={eventsOnToday} />
-          <EventList subheader={"Upcoming meetings"} events={upcomingEvents} />
-          <EventList subheader={"Past meetings"} events={pastEvents} />
+        <Box my={2} mt={8}>
+          <EventList subheader={t("meetingsOnToday")} events={eventsOnToday} />
+          <EventList
+            subheader={t("upcomingMeetings")}
+            events={upcomingEvents}
+          />
+          <EventList subheader={t("pastMeetings")} events={pastEvents} />
         </Box>
       ) : (
         <Box my={2} pt={2}>
           <Alert color="warning">
-            You are not logged in to Google. Please log in with the Google
-            account you wish to link your calendar to.
+            {t("unAuthorized")}
             <Button onClick={handleSignIn} variant="text">
               <img
                 src={chrome.runtime.getURL(googleSigninDarkNormal)}
@@ -141,7 +141,7 @@ function App() {
         <Typography variant="body2">
           &copy;{` Leko | v${pkg.version} | `}
           <a href={URL_PRIVACY_POLICY} target="_blank" rel="noopener">
-            Privacy Policy
+            {t("privacyPolicy")}
           </a>
         </Typography>
       </Container>
