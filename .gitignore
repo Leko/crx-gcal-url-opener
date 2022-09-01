@@ -105,3 +105,6 @@ dist
 .DS_Store
 dist.zip
 .vscode/
+
+dist-ssr
+*.local

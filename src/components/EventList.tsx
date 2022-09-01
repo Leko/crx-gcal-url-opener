@@ -1,12 +1,17 @@
-import React from "react";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Chip,
   IconButton,
   List,
   ListItem,
   ListItemText,
   ListSubheader,
+  Typography,
 } from "@mui/material";
 import OpenInNew from "@mui/icons-material/OpenInNew";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 
 type Event = {
   id: string;
@@ -37,28 +42,54 @@ export function EventList(props: Props) {
   const { subheader, events } = props;
 
   return (
-    <List dense subheader={<ListSubheader>{subheader}</ListSubheader>}>
-      {events.map((e) => (
-        <ListItem
-          key={e.id}
-          dense
-          secondaryAction={
-            <IconButton edge="end" href={e.url} target="_blank" rel="noreferer">
-              <OpenInNew />
-            </IconButton>
-          }
-        >
-          <ListItemText
-            primary={`${e.title} in ${relativeDuration(e.startsIn)}`}
-            secondary={e.url}
-          />
-        </ListItem>
-      ))}
-      {events.length === 0 ? (
-        <ListItem dense>
-          <ListItemText primary={`No more upcoming events.`} />
-        </ListItem>
-      ) : null}
-    </List>
+    <Accordion defaultExpanded>
+      <AccordionSummary expandIcon={<ExpandMore />}>
+        {
+          <Typography variant="subtitle2">
+            {subheader}{" "}
+            <Chip variant="filled" label={events.length} size="small" />
+          </Typography>
+        }
+      </AccordionSummary>
+      <AccordionDetails>
+        <List disablePadding>
+          {events.map((e) => (
+            <ListItem
+              key={e.id}
+              dense
+              disablePadding
+              secondaryAction={
+                <IconButton
+                  edge="end"
+                  href={e.url}
+                  target="_blank"
+                  rel="noreferer"
+                >
+                  <OpenInNew />
+                </IconButton>
+              }
+            >
+              <ListItemText
+                primary={`${e.title} in ${relativeDuration(e.startsIn)}`}
+                secondary={e.url}
+                secondaryTypographyProps={{
+                  style: {
+                    overflow: "hidden",
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    WebkitLineClamp: 2,
+                  },
+                }}
+              />
+            </ListItem>
+          ))}
+          {events.length === 0 ? (
+            <ListItem dense>
+              <ListItemText primary={`No more upcoming events.`} />
+            </ListItem>
+          ) : null}
+        </List>
+      </AccordionDetails>
+    </Accordion>
   );
 }

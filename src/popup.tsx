@@ -1,10 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { Alert, Box, Button, Container, Typography } from "@mui/material";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { getAuthToken } from "./auth";
 import { AppBar } from "./components/AppBar";
 import { EventList } from "./components/EventList";
+import { URL_PRIVACY_POLICY } from "./constants";
+import googleSigninDarkNormal from "./images/btn_google_signin_dark_normal_web@2x.png";
+import pkg from "../package.json";
 
 type Event = {
   id: string;
@@ -106,7 +109,7 @@ function App() {
         <Typography variant="subtitle1">{events.length} events</Typography>
       </Container>
       {isAuthenticated ? (
-        <Box my={2}>
+        <Box my={4}>
           <EventList subheader={"Events on today"} events={eventsOnToday} />
           <EventList subheader={"Upcoming events"} events={upcomingEvents} />
           <EventList subheader={"Past events"} events={pastEvents} />
@@ -118,7 +121,7 @@ function App() {
             account you wish to link your calendar to.
             <Button onClick={handleSignIn} variant="text">
               <img
-                src="btn_google_signin_dark_normal_web@2x.png"
+                src={chrome.runtime.getURL(googleSigninDarkNormal)}
                 height="48"
                 style={{ maxWidth: "100%", marginTop: 8 }}
               />
@@ -128,12 +131,8 @@ function App() {
       )}
       <Container component="footer">
         <Typography variant="body2">
-          &copy; Leko{" | "}
-          <a
-            href="https://leko.jp/crx-gcal-url-opener/#%E3%83%97%E3%83%A9%E3%82%A4%E3%83%90%E3%82%B7%E3%83%BC%E3%81%B8%E3%81%AE%E5%8F%96%E3%82%8A%E7%B5%84%E3%81%BF"
-            target="_blank"
-            rel="noopener"
-          >
+          &copy;{` Leko | v${pkg.version} | `}
+          <a href={URL_PRIVACY_POLICY} target="_blank" rel="noopener">
             Privacy Policy
           </a>
         </Typography>
@@ -142,13 +141,10 @@ function App() {
   );
 }
 
-function Root() {
-  return (
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  <React.StrictMode>
     <ErrorBoundary>
       <App />
     </ErrorBoundary>
-  );
-}
-
-// @ts-expect-error createRoot is experimental
-ReactDOM.createRoot(document.getElementById("root")).render(<Root />);
+  </React.StrictMode>
+);
