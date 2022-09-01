@@ -11,7 +11,8 @@
     "build": "tsc && vite build",
     "postbuild": "zip -r dist.zip dist",
     "dev": "vite",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "release": "gh release create v${npm_package_version} --generate-notes"
   },
   "repository": "Leko/crx-gcal-url-opener",
   "author": "Leko <leko.noor@gmail.com>",
