@@ -7,6 +7,7 @@ import { AppBar } from "./components/AppBar";
 import { EventList } from "./components/EventList";
 import { URL_PRIVACY_POLICY } from "./constants";
 import googleSigninDarkNormal from "./images/btn_google_signin_dark_normal_web@2x.png";
+import pkg from "../package.json";
 
 type Event = {
   id: string;
@@ -104,7 +105,7 @@ function App() {
         <Typography variant="subtitle1">{events.length} events</Typography>
       </Container>
       {isAuthenticated ? (
-        <Box my={2}>
+        <Box my={4}>
           <EventList subheader={"Events on today"} events={eventsOnToday} />
           <EventList subheader={"Upcoming events"} events={upcomingEvents} />
         </Box>
@@ -125,7 +126,7 @@ function App() {
       )}
       <Container component="footer">
         <Typography variant="body2">
-          &copy;{" Leko | "}
+          &copy;{` Leko | v${pkg.version} | `}
           <a href={URL_PRIVACY_POLICY} target="_blank" rel="noopener">
             Privacy Policy
           </a>
