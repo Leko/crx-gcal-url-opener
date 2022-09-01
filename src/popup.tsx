@@ -118,9 +118,9 @@ function App() {
       </Container>
       {isAuthenticated ? (
         <Box my={4}>
-          <EventList subheader={"Events on today"} events={eventsOnToday} />
-          <EventList subheader={"Upcoming events"} events={upcomingEvents} />
-          <EventList subheader={"Past events"} events={pastEvents} />
+          <EventList subheader={"Meetings on today"} events={eventsOnToday} />
+          <EventList subheader={"Upcoming meetings"} events={upcomingEvents} />
+          <EventList subheader={"Past meetings"} events={pastEvents} />
         </Box>
       ) : (
         <Box my={2} pt={2}>
