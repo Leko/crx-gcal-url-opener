@@ -29,10 +29,10 @@ type Props = {
 
 function relativeDuration(duration: number) {
   const mins = duration / 1000 / 60;
-  if (mins < 60) {
+  if (Math.abs(mins) < 60) {
     return `${mins.toFixed(0)} mins`;
   }
-  if (mins / 60 < 24) {
+  if (Math.abs(mins) / 60 < 24) {
     return `${(mins / 60).toFixed(1)} hours`;
   }
   return `${(mins / 60 / 24).toFixed(1)} days`;

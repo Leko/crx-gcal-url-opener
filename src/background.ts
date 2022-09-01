@@ -93,7 +93,11 @@ async function startWatching() {
     });
   await chrome.action.setBadgeText({
     text: String(
-      matched.filter((e) => isSameDay(new Date(e.startsAt), new Date())).length
+      matched.filter(
+        (e) =>
+          isSameDay(new Date(e.startsAt), new Date()) &&
+          new Date(e.startsAt).getTime() > Date.now()
+      ).length
     ),
   });
   for (const event of matched) {
@@ -138,7 +142,11 @@ chrome.alarms.onAlarm.addListener(async (alerm) => {
     }
     default: {
       const event = await getEvent(alerm.name);
-      if (!event || (await isOpened(alerm.name))) {
+      if (
+        !event ||
+        (await isOpened(alerm.name)) ||
+        new Date(event.startsAt).getTime() < Date.now()
+      ) {
         return;
       }
       await markAsOpened(alerm.name);

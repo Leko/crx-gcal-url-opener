@@ -30,10 +30,7 @@ export function willParticipate(event: Event, selfEmail: string): boolean {
   );
 }
 export function isFutureEvent(event: Event): boolean {
-  return !!(
-    event.start?.dateTime &&
-    new Date(event.start.dateTime).getTime() > Date.now()
-  );
+  return !!event.start?.dateTime;
 }
 
 async function listEvents(
@@ -45,7 +42,15 @@ async function listEvents(
   url.searchParams.set("maxResults", "2500");
   url.searchParams.set("singleEvents", "true");
   url.searchParams.set("orderBy", "startTime");
-  url.searchParams.set("timeMin", new Date().toISOString());
+  const today = new Date();
+  url.searchParams.set(
+    "timeMin",
+    new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    ).toISOString()
+  );
   url.searchParams.set(
     "timeMax",
     new Date(Date.now() + 1000 * 60 * 60 * 24 * 3).toISOString()
