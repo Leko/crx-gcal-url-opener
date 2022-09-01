@@ -78,13 +78,18 @@ describe("Config", () => {
     it.each([
       // Without subdomains
       "https://zoom.us/j/xxx",
+      "https://zoom.us/w/xxx",
       // official subdomains
       "https://us02web.zoom.us/j/xxx",
+      "https://us02web.zoom.us/w/xxx",
       // Vanity URL
       // https://support.zoom.us/hc/ja/articles/215062646-%E3%83%90%E3%83%8B%E3%83%86%E3%82%A3-URL-%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E3%81%AE%E3%82%AC%E3%82%A4%E3%83%89%E3%83%A9%E3%82%A4%E3%83%B3
       "https://hooli.zoom.us/j/xxx",
       "https://hooli-org.zoom.us/j/xxx",
       "https://1234.zoom.us/j/xxx",
+      "https://hooli.zoom.us/w/xxx",
+      "https://hooli-org.zoom.us/w/xxx",
+      "https://1234.zoom.us/w/xxx",
     ])("can extract Zoom from description: %s", async (url) => {
       const config = await loadConfig();
       expect(config.extractValidUrl({ description: url })).toMatchObject({
