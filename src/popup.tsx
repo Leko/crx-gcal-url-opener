@@ -18,7 +18,6 @@ import {
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { getAuthToken } from "./auth";
 import { AppBar } from "./components/AppBar";
-// import { EventList } from "./components/EventList";
 import { URL_PRIVACY_POLICY } from "./constants";
 import googleSigninDarkNormal from "./images/btn_google_signin_dark_normal_web@2x.png";
 import pkg from "../package.json";
