@@ -1,5 +1,10 @@
 # crx-gcal-url-opener
 
+![Chrome Web Store version](https://img.shields.io/chrome-web-store/v/pjginhohpenlemfdcjbahjbhnpinfnlm)
+![Chrome Web Store users](https://img.shields.io/chrome-web-store/users/pjginhohpenlemfdcjbahjbhnpinfnlm)
+![Chrome Web Store rating](https://img.shields.io/chrome-web-store/rating/pjginhohpenlemfdcjbahjbhnpinfnlm)
+![Chrome Web Store rating count](https://img.shields.io/chrome-web-store/rating-count/pjginhohpenlemfdcjbahjbhnpinfnlm)
+
 This is a Chrome extension that automatically opens the URL set in your calendar event as a new tab a few minutes before the start of the Google Calendar event.
 
 - **Easy to use**: Just log in with your Google account to link calendars and it's automatic.
