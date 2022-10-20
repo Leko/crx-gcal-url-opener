@@ -10,4 +10,5 @@ export type ParsedEvent = Omit<PortableEvent, "startsAt" | "endsAt"> & {
   startsAt: Date;
   endsAt: Date;
   startsIn: number;
+  duration: number;
 };

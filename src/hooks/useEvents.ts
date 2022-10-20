@@ -13,6 +13,9 @@ export function useEvents() {
           startsAt: new Date(event.startsAt),
           endsAt: new Date(event.endsAt),
           startsIn: new Date(event.startsAt).getTime() - Date.now(),
+          duration:
+            new Date(event.endsAt).getTime() -
+            new Date(event.startsAt).getTime(),
         })
       ),
     [eventMap]

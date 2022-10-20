@@ -10,26 +10,30 @@ import { Grid, IconButton, Typography } from "@mui/material";
 import OpenInNew from "@mui/icons-material/OpenInNew";
 import { useI18n } from "../hooks/useI18n";
 import { ParsedEvent } from "../types/Event";
+import { useCallback } from "react";
 
 type Props = {
   past: boolean;
   event: ParsedEvent;
 };
 
-function relativeDuration(duration: number) {
-  const mins = duration / 1000 / 60;
-  if (Math.abs(mins) < 60) {
-    return chrome.i18n.getMessage("inNMinutes", [mins.toFixed(0)]);
-  }
-  if (Math.abs(mins) / 60 < 24) {
-    return chrome.i18n.getMessage("inNHours", [(mins / 60).toFixed(1)]);
-  }
-  return chrome.i18n.getMessage("inNDays", [(mins / 60 / 24).toFixed(1)]);
-}
-
 export function EventTimelineItem(props: Props) {
   const { past, event } = props;
-  const { timeFormatter } = useI18n();
+  const { t, timeFormatter } = useI18n();
+
+  const relativeDuration = useCallback(
+    (duration: number) => {
+      const mins = duration / 1000 / 60;
+      if (Math.abs(mins) < 60) {
+        return t("inNMinutes", [mins.toFixed(0)]);
+      }
+      if (Math.abs(mins) / 60 < 24) {
+        return t("inNHours", [(mins / 60).toFixed(1)]);
+      }
+      return t("inNDays", [(mins / 60 / 24).toFixed(1)]);
+    },
+    [t]
+  );
 
   return (
     <TimelineItem className={past ? undefined : "upcoming"}>
@@ -38,9 +42,7 @@ export function EventTimelineItem(props: Props) {
         sx={{ width: 80, flex: "none", paddingLeft: 0 }}
       >
         <Typography>{timeFormatter.format(event.startsAt)}</Typography>
-        {past ? null : (
-          <Typography>{relativeDuration(event.startsIn)}</Typography>
-        )}
+        {!past && <Typography>{relativeDuration(event.startsIn)}</Typography>}
       </TimelineOppositeContent>
       <TimelineSeparator>
         <TimelineDot
@@ -58,7 +60,7 @@ export function EventTimelineItem(props: Props) {
             <Typography color="text.secondary">
               {timeFormatter.format(event.startsAt)}~
               {timeFormatter.format(event.endsAt)} (
-              {(event.endsAt.getTime() - event.startsAt.getTime()) / 1000 / 60}
+              {(event.duration / 1000 / 60).toFixed(0)}
               m)
             </Typography>
           </Grid>
