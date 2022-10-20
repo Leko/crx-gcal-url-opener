@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import React, { useLayoutEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { Box } from "@mui/material";
 import { ErrorBoundary } from "./components/ErrorBoundary";
