@@ -2,7 +2,12 @@
   "manifest_version": 3,
   "name": "crx-gcal-url-opener",
   "description": "Chrome extension that automatically opens Google Calendar meet links and event URLs",
-  "permissions": ["alarms", "identity", "identity.email", "storage"],
+  "permissions": [
+    "alarms",
+    "identity",
+    "identity.email",
+    "storage"
+  ],
   "default_locale": "en",
   "content_security_policy": {},
   "action": {
@@ -25,5 +30,5 @@
     ]
   },
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgc3poz04XFD1oqDacIWYKTzIPfg0cEIh5kobaDqG+JYCbLvxYdlX2jXICWIAJR0E6AEdSzDWy2wlc4LPrVpGIZBy5K0f4nb+R7SdiJxOcWLQI8pNRgHnodT2mkdSy8gHRUvbZjT9ulG87tslugQazCluK0dk8DElLyTO1Aijw70+xySHxXxeH4CrDPA+aEeq9dDUsMMIi651/wik5GPcRIHgADbQj5iW8Z4l3PPAADCtsYKKyvLDqbDwg6mcJcGSz6A0mKHs27eMtw3shRdd+LhwN35InDGfo4u9hwL4nX6Ty5JUi8ipUUKu51WJpbNczotJqWedB1L9fB1DEvPDYwIDAQAB",
-  "version": "0.8.0"
+  "version": "0.9.0"
 }
