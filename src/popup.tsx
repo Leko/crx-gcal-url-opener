@@ -1,14 +1,37 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 import ReactDOM from "react-dom/client";
-import { Alert, Box, Button, Container, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  Grid,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { getAuthToken } from "./auth";
 import { AppBar } from "./components/AppBar";
-import { EventList } from "./components/EventList";
 import { URL_PRIVACY_POLICY } from "./constants";
 import googleSigninDarkNormal from "./images/btn_google_signin_dark_normal_web@2x.png";
 import pkg from "../package.json";
 import { t } from "./i18n";
+import {
+  Timeline,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
+  TimelineItem,
+  TimelineOppositeContent,
+  TimelineSeparator,
+} from "@mui/lab";
+import OpenInNew from "@mui/icons-material/OpenInNew";
 
 type Event = {
   id: string;
@@ -24,6 +47,17 @@ function isSameDay(a: Date, b: Date) {
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate()
   );
+}
+
+function relativeDuration(duration: number) {
+  const mins = duration / 1000 / 60;
+  if (Math.abs(mins) < 60) {
+    return chrome.i18n.getMessage("inNMinutes", [mins.toFixed(0)]);
+  }
+  if (Math.abs(mins) / 60 < 24) {
+    return chrome.i18n.getMessage("inNHours", [(mins / 60).toFixed(1)]);
+  }
+  return chrome.i18n.getMessage("inNDays", [(mins / 60 / 24).toFixed(1)]);
 }
 
 function App() {
@@ -42,35 +76,11 @@ function App() {
         .sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime()),
     [eventMap]
   );
-  const eventsOnToday = useMemo(
-    () =>
-      events.filter(
-        (event) =>
-          isSameDay(event.startsAt, mountedAt) &&
-          event.startsAt.getTime() > mountedAt.getTime()
-      ),
-    [events, mountedAt]
-  );
-  const eventsOnTodayIds = useMemo(
-    () => new Set(eventsOnToday.map((event) => event.id)),
-    [eventsOnToday]
-  );
-  const upcomingEvents = useMemo(
-    () =>
-      events.filter(
-        (event) =>
-          !eventsOnTodayIds.has(event.id) &&
-          event.startsAt.getTime() > mountedAt.getTime()
-      ),
-    [events, eventsOnTodayIds]
-  );
-  const pastEvents = useMemo(
-    () =>
-      events
-        .filter((event) => event.startsAt.getTime() <= mountedAt.getTime())
-        .reverse(),
-    [events]
-  );
+  const timeFormatter = new Intl.DateTimeFormat(chrome.i18n.getUILanguage(), {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 
   const handleSignIn = useCallback(() => {
     chrome.runtime.sendMessage({ type: "SignInRequest" });
@@ -106,9 +116,17 @@ function App() {
   useEffect(() => {
     listReminders();
   }, [isAuthenticated]);
+  useLayoutEffect(() => {
+    document
+      .querySelector(".upcoming")
+      ?.previousElementSibling?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+  }, [events]);
 
   return (
-    <div style={{ width: 320 }}>
+    <div style={{ width: 360 }}>
       <AppBar
         isAuthenticated={isAuthenticated}
         onRefresh={handleRefresh}
@@ -116,15 +134,65 @@ function App() {
       />
       {isAuthenticated ? (
         <Box my={2} mt={8}>
-          <EventList subheader={t("meetingsOnToday")} events={eventsOnToday} />
-          <EventList
-            subheader={t("upcomingMeetings")}
-            events={upcomingEvents}
-          />
-          <EventList subheader={t("pastMeetings")} events={pastEvents} />
+          <Timeline sx={{ padding: 0 }}>
+            {events.map((event) => {
+              const past = event.startsAt.getTime() < mountedAt.getTime();
+              return (
+                <TimelineItem className={past ? undefined : "upcoming"}>
+                  <TimelineOppositeContent
+                    color="text.secondary"
+                    sx={{ width: 80, flex: "none", paddingLeft: 0 }}
+                  >
+                    <Typography>
+                      {timeFormatter.format(event.startsAt)}
+                    </Typography>
+                    {past ? null : (
+                      <Typography>
+                        {relativeDuration(event.startsIn)}
+                      </Typography>
+                    )}
+                  </TimelineOppositeContent>
+                  <TimelineSeparator>
+                    <TimelineDot
+                      variant={past ? "outlined" : "filled"}
+                      color={past ? "grey" : "primary"}
+                    />
+                    <TimelineConnector />
+                  </TimelineSeparator>
+                  <TimelineContent>
+                    <Grid container>
+                      <Grid item flex={1} sx={{ overflow: "hidden" }}>
+                        <Typography color={past ? "text.secondary" : undefined}>
+                          {event.title}
+                        </Typography>
+                        <Typography color="text.secondary">
+                          {timeFormatter.format(event.startsAt)}~
+                          {timeFormatter.format(event.endsAt)} (
+                          {(event.endsAt.getTime() - event.startsAt.getTime()) /
+                            1000 /
+                            60}
+                          m)
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <IconButton
+                          edge="end"
+                          href={event.url}
+                          target="_blank"
+                          rel="noreferer"
+                        >
+                          <OpenInNew />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                  </TimelineContent>
+                </TimelineItem>
+              );
+            })}
+          </Timeline>
         </Box>
       ) : (
-        <Box my={2} pt={2}>
+        <Box my={2} pt={8}>
           <Alert color="warning">
             {t("unAuthorized")}
             <Button onClick={handleSignIn} variant="text">

@@ -16,5 +16,17 @@
   "unAuthorized": {
     "message": "You are not logged in to Google. Please log in with the Google account you wish to link your calendar to."
   },
-  "privacyPolicy": { "message": "Privacy Policy" }
+  "privacyPolicy": { "message": "Privacy Policy" },
+  "inNMinutes": {
+    "message": "in $1m",
+    "placeholders": { "duration": { "content": "$1" } }
+  },
+  "inNHours": {
+    "message": "in $1h",
+    "placeholders": { "duration": { "content": "$1" } }
+  },
+  "inNDays": {
+    "message": "in $1d",
+    "placeholders": { "duration": { "content": "$1" } }
+  }
 }
