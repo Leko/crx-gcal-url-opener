@@ -1,4 +1,5 @@
 {
+  "author": { "message": "Leko" },
   "appName": { "message": "gcal-url-opener" },
   "refresh": { "message": "Refresh" },
   "signOut": { "message": "Sign out" },
@@ -28,5 +29,9 @@
   "inNDays": {
     "message": "in $1d",
     "placeholders": { "duration": { "content": "$1" } }
+  },
+  "version": {
+    "message": "v$1",
+    "placeholders": { "version": { "content": "$1" } }
   }
 }

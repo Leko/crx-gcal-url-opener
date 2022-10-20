@@ -10,17 +10,16 @@ import {
   upsertEvent,
 } from "./storage";
 
-type ListAccountRequest = { type: "ListAccountRequest" };
-type SignInRequest = { type: "SignInRequest" };
-type SignOutRequest = { type: "SignOutRequest" };
-type RefreshRequest = { type: "RefreshRequest" };
-type ListReminders = { type: "ListReminders" };
 type IncomingMessage =
-  | ListAccountRequest
-  | SignInRequest
-  | SignOutRequest
-  | RefreshRequest
-  | ListReminders;
+  | { type: "ListAccountRequest" }
+  | { type: "SignInRequest" }
+  | { type: "SignOutRequest" }
+  | { type: "RefreshRequest" }
+  | { type: "ListReminders" };
+
+const Alerms = {
+  refetch: "CRX_GCAL_REFRESH",
+};
 
 let loading = Promise.resolve();
 
@@ -125,7 +124,7 @@ async function init() {
   if (authToken) {
     loading = startWatching();
   }
-  await chrome.alarms.create("CRX_GCAL_REFRESH", {
+  await chrome.alarms.create(Alerms.refetch, {
     periodInMinutes: config.pollInterval,
   });
 }
@@ -136,7 +135,7 @@ chrome.runtime.onMessage.addListener((message, _sender, callback) => {
 });
 chrome.alarms.onAlarm.addListener(async (alerm) => {
   switch (alerm.name) {
-    case "CRX_GCAL_REFRESH": {
+    case Alerms.refetch: {
       loading = startWatching();
       return;
     }

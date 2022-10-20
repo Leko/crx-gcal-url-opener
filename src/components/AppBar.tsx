@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import RepeatIcon from "@mui/icons-material/Repeat";
-import { t } from "../i18n";
+import { useI18n } from "../hooks/useI18n";
 
 type Props = {
   isAuthenticated: boolean;
@@ -18,6 +18,7 @@ type Props = {
 
 export function AppBar(props: Props) {
   const { isAuthenticated, onRefresh, onSignOut } = props;
+  const { t } = useI18n();
 
   return (
     <MuiAppBar>
