@@ -17,8 +17,16 @@ const urlRules = [
     provider: "Zoom Meetings",
   },
   {
-    test: /https:\/\/teams\.microsoft\.com\/l\/meetup-join\//,
+    test: /^https:\/\/teams\.microsoft\.com\/l\/meetup-join\//,
     provider: "Microsoft Teams",
+  },
+  {
+    test: /^https:\/\/\d+.webex.com\/\d+\/j.php/,
+    provider: "WebEx",
+  },
+  {
+    test: /^https:\/\/chime.aws\//,
+    provider: "Amazon Chime",
   },
   {
     test: /^https:\/\/meet\.google\.com\//,
