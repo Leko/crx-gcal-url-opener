@@ -36,6 +36,40 @@ describe("Config", () => {
         })
       ).toMatchObject({ rule: { provider: "Microsoft Teams" } });
     });
+    it("returns Amazon Chime rather than Google Meet", async () => {
+      const config = await loadConfig();
+      expect(
+        config.extractValidUrl({
+          hangoutLink: "https://meet.google.com/xxx",
+          description: "https://chime.aws/0000000000",
+        })
+      ).toMatchObject({ rule: { provider: "Amazon Chime" } });
+      expect(
+        config.extractValidUrl({
+          description: [
+            "https://meet.google.com/xxx",
+            "https://chime.aws/0000000000",
+          ].join("\n"),
+        })
+      ).toMatchObject({ rule: { provider: "Amazon Chime" } });
+    });
+    it("returns WebEx rather than Google Meet", async () => {
+      const config = await loadConfig();
+      expect(
+        config.extractValidUrl({
+          hangoutLink: "https://meet.google.com/xxx",
+          description: "https://00000.webex.com/00000/j.php?MTID=xxx",
+        })
+      ).toMatchObject({ rule: { provider: "WebEx" } });
+      expect(
+        config.extractValidUrl({
+          description: [
+            "https://meet.google.com/xxx",
+            "https://00000.webex.com/00000/j.php?MTID=xxx",
+          ].join("\n"),
+        })
+      ).toMatchObject({ rule: { provider: "WebEx" } });
+    });
     it("can extract Google Meet URL from hangoutLink", async () => {
       const config = await loadConfig();
       expect(
@@ -102,6 +136,24 @@ describe("Config", () => {
         const config = await loadConfig();
         expect(config.extractValidUrl({ description: url })).toMatchObject({
           rule: { provider: "Microsoft Teams" },
+        });
+      }
+    );
+    it.each(["https://chime.aws/0000000000"])(
+      "can extract Amazon Chime from description: %s",
+      async (url) => {
+        const config = await loadConfig();
+        expect(config.extractValidUrl({ description: url })).toMatchObject({
+          rule: { provider: "Amazon Chime" },
+        });
+      }
+    );
+    it.each(["https://00000.webex.com/00000/j.php?MTID=xxx"])(
+      "can extract WebEx from description: %s",
+      async (url) => {
+        const config = await loadConfig();
+        expect(config.extractValidUrl({ description: url })).toMatchObject({
+          rule: { provider: "WebEx" },
         });
       }
     );
