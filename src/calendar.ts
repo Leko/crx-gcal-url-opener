@@ -2,7 +2,7 @@ export type CalendarAPIResponse = {
   id: string;
   summary: string;
   status: string;
-  attendees: { responseStatus: string }[];
+  attendees?: { responseStatus: string }[];
   start: {
     dateTime: string;
   };
@@ -31,12 +31,7 @@ export async function listAllEvents(
     syncToken = res.nextSyncToken;
   }
   return allEvents.filter((e) => {
-    return (
-      typeof e.status === "string" &&
-      Array.isArray(e.attendees) &&
-      e.start?.dateTime &&
-      e.end?.dateTime
-    );
+    return e.start?.dateTime && e.end?.dateTime;
   });
 }
 
