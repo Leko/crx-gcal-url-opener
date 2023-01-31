@@ -1,12 +1,16 @@
 import { getAuthToken, getProfileUserInfo } from "./auth";
-import { isFutureEvent, listAllEvents, willParticipate } from "./calendar";
+import {
+  CalendarAPIResponse,
+  listAllEvents,
+  willParticipate,
+} from "./calendar";
 import { loadConfig } from "./config";
 import {
   getAllEvents,
   getEvent,
   isOpened,
   markAsOpened,
-  ScheduledEvent,
+  removeEvent,
   upsertEvent,
 } from "./storage";
 
@@ -16,6 +20,11 @@ type IncomingMessage =
   | { type: "SignOutRequest" }
   | { type: "RefreshRequest" }
   | { type: "ListReminders" };
+
+type AlermPatch =
+  | { type: "add"; id: string; when: Date }
+  | { type: "remove"; id: string }
+  | { type: "noChange" };
 
 const Alerms = {
   refetch: "CRX_GCAL_REFRESH",
@@ -60,6 +69,28 @@ function isSameDay(a: Date, b: Date) {
   );
 }
 
+async function calcPatches(
+  events: CalendarAPIResponse[],
+  alermIds: Set<string>,
+  email: string
+): Promise<AlermPatch[]> {
+  return events.map((e): AlermPatch => {
+    if (willParticipate(e, email)) {
+      if (alermIds.has(e.id)) {
+        return { type: "noChange" };
+      } else {
+        return { type: "add", id: e.id, when: new Date(e.start.dateTime) };
+      }
+    } else {
+      if (alermIds.has(e.id)) {
+        return { type: "remove", id: e.id };
+      } else {
+        return { type: "noChange" };
+      }
+    }
+  });
+}
+
 async function startWatching() {
   const [accessToken, user, config] = await Promise.all([
     getAuthToken(),
@@ -68,52 +99,48 @@ async function startWatching() {
     chrome.action.setBadgeText({ text: "-" }),
   ]);
   const allEvents = await listAllEvents(accessToken, "primary");
-  const matched = allEvents
-    .filter(
-      (e) =>
-        willParticipate(e, user.email) &&
-        isFutureEvent(e) &&
-        !!config.extractValidUrl(e)
-    )
-    .map((event): ScheduledEvent => {
-      let { url, rule } = config.extractValidUrl(event)!;
-      if (rule.provider === "Google Meet") {
-        const tmp = new URL(url);
-        tmp.searchParams.set("authuser", user.email);
-        url = tmp.toString();
-      }
-      return {
-        id: event.id,
-        title: event.summary,
-        startsAt: event.start?.dateTime ?? null,
-        endsAt: event.end?.dateTime ?? null,
-        url: url!,
-      };
-    });
+  const targetEvents = allEvents.filter((e) => !!config.extractValidUrl(e));
+  const alermIds = new Set((await chrome.alarms.getAll()).map((a) => a.name));
+  const patches = await calcPatches(targetEvents, alermIds, user.email);
+  const upcomingEvents = targetEvents.filter(
+    (e) =>
+      willParticipate(e, user.email) &&
+      isSameDay(new Date(e.start.dateTime), new Date()) &&
+      new Date(e.start.dateTime).getTime() > Date.now()
+  );
   await chrome.action.setBadgeText({
-    text: String(
-      matched.filter(
-        (e) =>
-          isSameDay(new Date(e.startsAt), new Date()) &&
-          new Date(e.startsAt).getTime() > Date.now()
-      ).length
-    ),
+    text: String(upcomingEvents.length),
   });
-  for (const event of matched) {
-    await registerReminder(event);
+  for (const p of patches) {
+    switch (p.type) {
+      case "add": {
+        const event = targetEvents.find((e) => e.id === p.id)!;
+        let { url, rule } = config.extractValidUrl(event)!;
+        if (rule.provider === "Google Meet") {
+          const tmp = new URL(url);
+          tmp.searchParams.set("authuser", user.email);
+          url = tmp.toString();
+        }
+        await Promise.all([
+          chrome.alarms.create(p.id, {
+            when: p.when.getTime() - config.offset,
+          }),
+          upsertEvent(p.id, {
+            id: event.id,
+            title: event.summary,
+            startsAt: event.start.dateTime,
+            endsAt: event.end.dateTime,
+            url: url!,
+          }),
+        ]);
+        break;
+      }
+      case "remove": {
+        await Promise.all([chrome.alarms.clear(p.id), removeEvent(p.id)]);
+        break;
+      }
+    }
   }
-}
-
-async function registerReminder(event: ScheduledEvent) {
-  const config = await loadConfig();
-  const startsAt = new Date(event.startsAt);
-  await chrome.alarms.clear(event.id);
-  await Promise.all([
-    chrome.alarms.create(event.id, {
-      when: startsAt.getTime() - config.offset,
-    }),
-    upsertEvent(event.id, event),
-  ]);
 }
 
 async function init() {

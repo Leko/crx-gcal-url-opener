@@ -19,6 +19,14 @@ export async function upsertEvent(
   });
 }
 
+export async function removeEvent(id: string): Promise<void> {
+  const prev = await getAllEvents();
+  prev.delete(id);
+  return chrome.storage.local.set({
+    [KEY_EVETNS]: JSON.stringify([prev.entries()]),
+  });
+}
+
 export async function getEvent(id: string): Promise<ScheduledEvent | null> {
   const map = await getAllEvents();
   return map.get(id) ?? null;
