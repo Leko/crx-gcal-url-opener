@@ -1,14 +1,25 @@
-type Event = {
-  status?: string;
+export type CalendarAPIResponse = {
+  id: string;
+  summary: string;
+  status: string;
   attendees?: { responseStatus: string }[];
-  start?: {
+  start: {
     dateTime: string;
   };
+  end: {
+    dateTime: string;
+  };
+  hangoutLink?: string;
+  description?: string;
+  conferenceData?: any;
 };
 
 const HOST = `https://www.googleapis.com/calendar/v3`;
 
-export async function listAllEvents(accessToken: string, email: string) {
+export async function listAllEvents(
+  accessToken: string,
+  email: string
+): Promise<CalendarAPIResponse[]> {
   const allEvents = [];
   let syncToken = null;
   while (1) {
@@ -19,18 +30,20 @@ export async function listAllEvents(accessToken: string, email: string) {
     }
     syncToken = res.nextSyncToken;
   }
-  return allEvents;
+  return allEvents.filter((e) => {
+    return e.start?.dateTime && e.end?.dateTime;
+  });
 }
 
-export function willParticipate(event: Event, selfEmail: string): boolean {
+export function willParticipate(
+  event: CalendarAPIResponse,
+  selfEmail: string
+): boolean {
   return !!(
     event.status !== "cancelled" &&
     event.attendees?.find((a: any) => a.email === selfEmail)?.responseStatus !==
       "declined"
   );
-}
-export function isFutureEvent(event: Event): boolean {
-  return !!event.start?.dateTime;
 }
 
 async function listEvents(
@@ -39,6 +52,7 @@ async function listEvents(
   syncToken?: string | null
 ) {
   const url = new URL(`${HOST}/calendars/${encodeURIComponent(email)}/events`);
+  url.searchParams.set("showDeleted", "true");
   url.searchParams.set("maxResults", "2500");
   url.searchParams.set("singleEvents", "true");
   url.searchParams.set("orderBy", "startTime");

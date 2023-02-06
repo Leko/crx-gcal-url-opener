@@ -14,8 +14,17 @@ export async function upsertEvent(
   newValue: ScheduledEvent
 ): Promise<void> {
   const prev = await getAllEvents();
-  return chrome.storage.local.set({
+  await chrome.storage.local.set({
     [KEY_EVETNS]: JSON.stringify([...prev.set(id, newValue).entries()]),
+  });
+}
+
+export async function removeEvent(id: string): Promise<void> {
+  const prev = await getAllEvents();
+  await chrome.storage.local.set({
+    [KEY_EVETNS]: JSON.stringify(
+      [...prev.entries()].filter(([key]) => key !== id)
+    ),
   });
 }
 
