@@ -1,6 +1,6 @@
-import React, { useLayoutEffect, useMemo, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom/client";
-import { Box } from "@mui/material";
+import { Alert, AlertTitle, Box, Paper } from "@mui/material";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { AppBar } from "./components/AppBar";
 import { Timeline } from "@mui/lab";
@@ -9,14 +9,18 @@ import { UnauthorizedAlert } from "./components/UnauthorizedAlert";
 import { EventTimelineItem } from "./components/EventTimelineItem";
 import { useAuth } from "./hooks/useAuth";
 import { useEvents } from "./hooks/useEvents";
+import { useNetworkState } from "./hooks/useNetworkState";
+import { useI18n } from "./hooks/useI18n";
 
 function startOfDay(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
 function App() {
+  const { t } = useI18n();
   const { isAuthenticated, signIn, signOut } = useAuth();
   const { events, refresh } = useEvents();
+  const { onLine } = useNetworkState();
   const [mountedAt] = useState(Date.now());
   const todaysOrUpcomingEvents = useMemo(() => {
     return events
@@ -54,6 +58,16 @@ function App() {
               />
             ))}
           </Timeline>
+          {onLine ? null : (
+            <Box m={1} position="fixed" bottom={10}>
+              <Paper>
+                <Alert severity="warning">
+                  <AlertTitle>{t("offlineNoticeTitle")}</AlertTitle>
+                  {t("offlineNoticeDescription")}
+                </Alert>
+              </Paper>
+            </Box>
+          )}
         </Box>
       ) : (
         <Box my={2} pt={8}>
