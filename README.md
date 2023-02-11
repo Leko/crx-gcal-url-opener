@@ -29,6 +29,19 @@ npm run dev
 
 Then `dist` directory will be created on the project root. Please load it on `chrome://extensions`.
 
+### Adding new video conference tools
+
+1. Add a new element into `urlRules` in src/config.ts
+2. Add tests in src/config.test.ts
+3. Create a pull request
+
+### Release
+
+```
+npm version {patch|minor|major}
+npm run release
+```
+
 ## License
 
 This repository is under [MIT license](https://opensource.org/licenses/MIT).
