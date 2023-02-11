@@ -9,6 +9,10 @@ export type ScheduledEvent = {
 const KEY_EVETNS = "events_1";
 const KEY_OPENED = "opened";
 
+export async function clearAllEvents(): Promise<void> {
+  await chrome.storage.local.remove([KEY_EVETNS, KEY_OPENED]);
+}
+
 export async function upsertEvent(
   id: string,
   newValue: ScheduledEvent

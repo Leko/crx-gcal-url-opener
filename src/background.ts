@@ -6,6 +6,7 @@ import {
 } from "./calendar";
 import { loadConfig } from "./config";
 import {
+  clearAllEvents,
   getAllEvents,
   getEvent,
   isOpened,
@@ -48,6 +49,8 @@ async function dispatch(message: IncomingMessage) {
         new Promise<void>((resolve) =>
           chrome.identity.clearAllCachedAuthTokens(resolve)
         ),
+        chrome.alarms.clearAll(),
+        clearAllEvents(),
       ]);
       return;
     }

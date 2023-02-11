@@ -8,8 +8,9 @@ export function useAuth() {
     chrome.runtime.sendMessage({ type: "SignInRequest" });
   }, []);
   const signOut = useCallback(() => {
-    chrome.runtime.sendMessage({ type: "SignOutRequest" });
-    setIsAuthenticated(false);
+    chrome.runtime.sendMessage({ type: "SignOutRequest" }).then(() => {
+      setIsAuthenticated(false);
+    });
   }, []);
 
   useEffect(() => {
