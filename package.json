@@ -3,6 +3,9 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Chrome extension that automatically opens Google Calendar meet links and event URLs",
+  "workspaces": [
+    "./docs"
+  ],
   "scripts": {
     "test:dev": "vitest",
     "test": "vitest run",
