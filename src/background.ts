@@ -24,6 +24,7 @@ type IncomingMessage =
 
 type AlermPatch =
   | { type: "add"; id: string; when: Date }
+  | { type: "update"; id: string; when: Date }
   | { type: "remove"; id: string }
   | { type: "noChange" };
 
@@ -74,18 +75,25 @@ function isSameDay(a: Date, b: Date) {
 
 async function calcPatches(
   events: CalendarAPIResponse[],
-  alermIds: Set<string>,
+  alarms: Map<string, chrome.alarms.Alarm>,
   email: string
 ): Promise<AlermPatch[]> {
+  const config = await loadConfig();
   return events.map((e): AlermPatch => {
     if (willParticipate(e, email)) {
-      if (alermIds.has(e.id)) {
+      if (
+        alarms.has(e.id) &&
+        alarms.get(e.id)!.scheduledTime + config.offset ===
+          new Date(e.start.dateTime).getTime()
+      ) {
         return { type: "noChange" };
+      } else if (alarms.has(e.id)) {
+        return { type: "update", id: e.id, when: new Date(e.start.dateTime) };
       } else {
         return { type: "add", id: e.id, when: new Date(e.start.dateTime) };
       }
     } else {
-      if (alermIds.has(e.id)) {
+      if (alarms.has(e.id)) {
         return { type: "remove", id: e.id };
       } else {
         return { type: "noChange" };
@@ -103,8 +111,10 @@ async function startWatching() {
   ]);
   const allEvents = await listAllEvents(accessToken, "primary");
   const targetEvents = allEvents.filter((e) => !!config.extractValidUrl(e));
-  const alermIds = new Set((await chrome.alarms.getAll()).map((a) => a.name));
-  const patches = await calcPatches(targetEvents, alermIds, user.email);
+  const alarms = new Map(
+    (await chrome.alarms.getAll()).map((a) => [a.name, a])
+  );
+  const patches = await calcPatches(targetEvents, alarms, user.email);
   const upcomingEvents = targetEvents.filter(
     (e) =>
       willParticipate(e, user.email) &&
@@ -116,6 +126,29 @@ async function startWatching() {
   });
   for (const p of patches) {
     switch (p.type) {
+      case "update": {
+        const event = targetEvents.find((e) => e.id === p.id)!;
+        let { url, rule } = config.extractValidUrl(event)!;
+        if (rule.provider === "Google Meet") {
+          const tmp = new URL(url);
+          tmp.searchParams.set("authuser", user.email);
+          url = tmp.toString();
+        }
+        await chrome.alarms.clear(p.id);
+        await Promise.all([
+          chrome.alarms.create(p.id, {
+            when: p.when.getTime() - config.offset,
+          }),
+          upsertEvent(p.id, {
+            id: event.id,
+            title: event.summary,
+            startsAt: event.start.dateTime,
+            endsAt: event.end.dateTime,
+            url: url!,
+          }),
+        ]);
+        break;
+      }
       case "add": {
         const event = targetEvents.find((e) => e.id === p.id)!;
         let { url, rule } = config.extractValidUrl(event)!;
