@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: 16
       - run: npm ci
-      - run: npx playwright install --with-deps
+      - run: npx playwright install --with-deps chromium
       - run: npm run build
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v3
