@@ -11,9 +11,13 @@ export function UnauthorizedAlert(props: Props) {
   const { t } = useI18n();
 
   return (
-    <Alert color="warning">
+    <Alert color="warning" data-testid="unauthorized-warning">
       <Typography>{t("unAuthorized")}</Typography>
-      <Button onClick={onSignIn} variant="text">
+      <Button
+        onClick={onSignIn}
+        variant="text"
+        data-testid="signin-with-google-button"
+      >
         <img
           src={chrome.runtime.getURL(googleSigninDarkNormal)}
           height="48"

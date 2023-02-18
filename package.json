@@ -9,6 +9,7 @@
   "scripts": {
     "test:dev": "vitest",
     "test": "vitest run",
+    "test:e2e": "playwright test --project=chromium",
     "preversion": "node ./scripts/bump-manifest.cjs $npm_new_version && git add manifest.json",
     "prebuild": "rm -rf dist dist.zip",
     "build": "tsc && vite build",
@@ -22,6 +23,7 @@
   "license": "MIT",
   "devDependencies": {
     "@crxjs/vite-plugin": "^1.0.13",
+    "@playwright/test": "^1.30.0",
     "@types/chrome": "^0.0.184",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",

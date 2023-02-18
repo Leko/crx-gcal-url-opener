@@ -17,6 +17,7 @@ function startOfDay(date: Date): Date {
 function App() {
   const { isAuthenticated, signIn, signOut } = useAuth();
   const { events, refresh } = useEvents();
+  console.log(events);
   const [mountedAt] = useState(Date.now());
   const todaysOrUpcomingEvents = useMemo(() => {
     return events
