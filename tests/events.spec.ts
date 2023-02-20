@@ -16,7 +16,6 @@ test("List events in order of start time", async ({ page, extensionId }) => {
     chrome.runtime.sendMessage = (() => {
       const origin = chrome.runtime.sendMessage.bind(chrome.runtime);
       return (message: { type: string }) => {
-        console.log({ message, mock: message.type === "ListReminders" });
         if (message.type === "ListReminders") {
           return Promise.resolve([
             {
@@ -64,7 +63,6 @@ test("List past events correctly", async ({ page, extensionId }) => {
     chrome.runtime.sendMessage = (() => {
       const origin = chrome.runtime.sendMessage.bind(chrome.runtime);
       return (message: { type: string }) => {
-        console.log({ message, mock: message.type === "ListReminders" });
         if (message.type === "ListReminders") {
           return Promise.resolve([
             {
