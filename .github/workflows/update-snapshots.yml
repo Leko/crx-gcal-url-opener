@@ -1,27 +1,17 @@
 on:
-  # It looks like you can't target PRs-only comments:
-  # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_comment-use-issue_comment
-  # So we must run this workflow every time a new comment is added to issues
-  # and pull requests
   issue_comment:
     types: [created]
 
 jobs:
   updatesnapshots:
-    # Run this job only on comments of pull requests that strictly match
-    # the "/update-snapshots" string
     if: ${{ github.event.issue.pull_request && github.event.comment.body == '/update-snapshots'}}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      # Checkout and do a deep fetch to load all commit IDs
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0 # Load all commits
           token: ${{ secrets.GITHUB_TOKEN }}
-      # Get the SHA and branch name of the comment's pull request
-      # We must use the GitHub API to retrieve these information because they're
-      # not accessibile within workflows triggered by "issue_comment"
       - name: Get SHA and branch name
         id: get-branch-and-sha
         run: |
