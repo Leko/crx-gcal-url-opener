@@ -18,7 +18,10 @@ export const test = base.extend<MyFixtures>({
       args: [
         `--disable-extensions-except=${pathToExtension}`,
         `--load-extension=${pathToExtension}`,
-      ],
+      ].concat(
+        // https://playwright.dev/docs/next/chrome-extensions#headless-mode
+        process.env.CI ? [`--headless=new`] : [] // the new headless arg for chrome v109+. Use '--headless=chrome' as arg for browsers v94-108.
+      ),
     });
     await use(context);
     await context.close();

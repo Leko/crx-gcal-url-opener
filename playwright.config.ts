@@ -9,7 +9,6 @@ const ciConfig: Partial<PlaywrightTestConfig> = {
     actionTimeout: 30000,
     trace: "on-first-retry",
     screenshot: "on",
-    headless: true,
   },
 };
 const localConfig: Partial<PlaywrightTestConfig> = {
@@ -21,7 +20,6 @@ const localConfig: Partial<PlaywrightTestConfig> = {
     actionTimeout: 0,
     trace: "on-first-retry",
     screenshot: "on",
-    headless: false,
   },
 };
 
