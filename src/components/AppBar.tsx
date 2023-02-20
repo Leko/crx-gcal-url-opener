@@ -27,12 +27,12 @@ export function AppBar(props: Props) {
         {isAuthenticated ? (
           <>
             <Tooltip title={t("refresh")}>
-              <IconButton onClick={onRefresh}>
+              <IconButton onClick={onRefresh} data-testid="refresh-button">
                 <RepeatIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title={t("signOut")}>
-              <IconButton onClick={onSignOut}>
+              <IconButton onClick={onSignOut} data-testid="signout-button">
                 <LogoutIcon />
               </IconButton>
             </Tooltip>
