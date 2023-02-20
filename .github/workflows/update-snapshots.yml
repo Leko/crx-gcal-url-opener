@@ -1,16 +1,39 @@
-name: CI
-
 on:
-  push:
-    branches:
-      - main
+  # It looks like you can't target PRs-only comments:
+  # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_comment-use-issue_comment
+  # So we must run this workflow every time a new comment is added to issues
+  # and pull requests
+  issue_comment:
+    types: [created]
 
 jobs:
-  playwright:
+  updatesnapshots:
+    # Run this job only on comments of pull requests that strictly match
+    # the "/update-snapshots" string
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/update-snapshots'}}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      # Checkout and do a deep fetch to load all commit IDs
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Load all commits
+          token: ${{ secrets.GITHUB_TOKEN }}
+      # Get the SHA and branch name of the comment's pull request
+      # We must use the GitHub API to retrieve these information because they're
+      # not accessibile within workflows triggered by "issue_comment"
+      - name: Get SHA and branch name
+        id: get-branch-and-sha
+        run: |
+          sha_and_branch=$(\
+            curl \
+              -H 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+              https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} \
+            | jq -r '.head.sha," ",.head.ref');
+          echo "::set-output name=sha::$(echo $sha_and_branch | cut -d " " -f 1)";
+          echo "::set-output name=branch::$(echo $sha_and_branch | cut -d " " -f 2)"
+      - run: git fetch
+      - run: git checkout ${{ steps.get-branch-and-sha.outputs.branch }}
       - uses: actions/setup-node@v3
         with:
           node-version: 16
