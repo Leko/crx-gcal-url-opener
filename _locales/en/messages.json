@@ -14,6 +14,10 @@
   "upcomingMeetings": { "message": "Upcoming meetings" },
   "pastMeetings": { "message": "Past meetings" },
   "noMoreUpcomingMeetings": { "message": "No more upcoming meetings." },
+  "offlineNoticeTitle": { "message": "It appears to be offline" },
+  "offlineNoticeDescription": {
+    "message": "Events are displayed even if it's offline, but newly added events and event updates won't be reflected."
+  },
   "unAuthorized": {
     "message": "You are not logged in to Google. Please log in with the Google account you wish to link your calendar to."
   },
