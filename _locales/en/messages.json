@@ -1,6 +1,9 @@
 {
   "author": { "message": "Leko" },
   "appName": { "message": "gcal-url-opener" },
+  "appDescription": {
+    "message": "Chrome extension that automatically opens Zoom, Google Meet, Teams, and other meeting URLs associated with your Google Calendar shortly before the meeting starts."
+  },
   "refresh": { "message": "Refresh" },
   "signOut": { "message": "Sign out" },
   "eventStartsIn": {

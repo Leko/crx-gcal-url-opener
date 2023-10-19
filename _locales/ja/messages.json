@@ -1,0 +1,6 @@
+{
+  "appName": { "message": "gcal-url-opener" },
+  "appDescription": {
+    "message": "Googleカレンダーのイベント開始数分前にリモートミーティングのURLを自動で開くChrome拡張"
+  }
+}
