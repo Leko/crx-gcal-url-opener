@@ -157,6 +157,24 @@ describe("Config", () => {
         });
       }
     );
+    it.each(["https://vc-jp.larksuite.com/j/xxx"])(
+      "can extract Lark from description: %s",
+      async (url) => {
+        const config = await loadConfig();
+        expect(config.extractValidUrl({ description: url })).toMatchObject({
+          rule: { provider: "Lark" },
+        });
+      }
+    );
+    it.each(["https://app.slack.com/huddle/xxx/xxx"])(
+      "can extract Slack Huddle from description: %s",
+      async (url) => {
+        const config = await loadConfig();
+        expect(config.extractValidUrl({ description: url })).toMatchObject({
+          rule: { provider: "Slack Huddle" },
+        });
+      }
+    );
     it.each(["https://meet.google.com/xxx-xxxx-xxx"])(
       "can extract Google Meet from description: %s",
       async (url) => {
