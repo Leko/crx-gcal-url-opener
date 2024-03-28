@@ -29,6 +29,14 @@ const urlRules = [
     provider: "Amazon Chime",
   },
   {
+    test: /^https:\/\/vc-jp.larksuite.com\/j\//,
+    provider: "Lark",
+  },
+  {
+    test: /^https:\/\/app.slack.com\/huddle\//,
+    provider: "Slack Huddle",
+  },
+  {
     test: /^https:\/\/meet\.google\.com\//,
     provider: "Google Meet",
   },
