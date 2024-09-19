@@ -31,7 +31,7 @@
     "chrome-webstore-upload-cli": "^2.1.0",
     "ts-loader": "^9.3.0",
     "typescript": "^4.6.4",
-    "vite": "^3.0.0",
+    "vite": "^5.0.0",
     "vitest": "^1.0.0"
   },
   "dependencies": {
