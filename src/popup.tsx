@@ -49,6 +49,7 @@ function App() {
           <Timeline sx={{ padding: 0 }}>
             {todaysOrUpcomingEvents.map((event) => (
               <EventTimelineItem
+                key={event.id}
                 past={event.startsAt.getTime() < mountedAt}
                 event={event}
               />
