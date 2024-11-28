@@ -21,7 +21,12 @@ const urlRules = [
     provider: "Microsoft Teams",
   },
   {
-    test: /^https:\/\/\d+.webex.com\/\d+\/j.php/,
+    test: /^https:\/\/\d+\.webex\.com\/\d+\/j\.php/,
+    provider: "WebEx",
+  },
+  //
+  {
+    test: /^https:\/\/\w+\.my\.webex\.com\/\w+\.my\/\j.php/,
     provider: "WebEx",
   },
   {
