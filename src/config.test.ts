@@ -108,6 +108,21 @@ describe("Config", () => {
         })
       ).toMatchObject({ rule: { provider: "Microsoft Teams" } });
     });
+    it("can extract any conference video link", async () => {
+      const config = await loadConfig();
+      expect(
+        config.extractValidUrl({
+          conferenceData: {
+            entryPoints: [
+              {
+                entryPointType: "video",
+                uri: "https://example.com/",
+              },
+            ],
+          },
+        })
+      ).toMatchObject({ url: "https://example.com/", rule: null });
+    });
 
     it.each([
       // Without subdomains
