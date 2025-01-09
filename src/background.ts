@@ -9,8 +9,6 @@ import {
   clearAllEvents,
   getAllEvents,
   getEvent,
-  isOpened,
-  markAsOpened,
   removeEvent,
   upsertEvent,
 } from "./storage";
@@ -206,12 +204,11 @@ chrome.alarms.onAlarm.addListener(async (alerm) => {
       const event = await getEvent(alerm.name);
       if (
         !event ||
-        (await isOpened(alerm.name)) ||
+        (await chrome.tabs.query({ url: event.url })).length > 0 ||
         new Date(event.startsAt).getTime() < Date.now()
       ) {
         return;
       }
-      await markAsOpened(alerm.name);
       const tab = await chrome.tabs.create({ url: event.url });
       await chrome.windows.update(tab.windowId, {
         focused: true,
