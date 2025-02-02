@@ -72,7 +72,7 @@ class Config {
     conferenceData?: any;
   }): {
     url: string;
-    rule: URLRule;
+    rule: URLRule | null;
   } | null {
     const urls: string[] = [
       ...getUrls(event.description ?? "", { requireSchemeOrWww: false }),
@@ -97,6 +97,11 @@ class Config {
             url: videoEntryPoint[0].uri,
             rule: matchedRule[0],
           };
+        } else {
+          return {
+            url: videoEntryPoint[0].uri,
+            rule: null,
+          }
         }
       }
     }

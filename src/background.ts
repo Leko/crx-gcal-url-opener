@@ -129,7 +129,7 @@ async function startWatching() {
       case "update": {
         const event = targetEvents.find((e) => e.id === p.id)!;
         let { url, rule } = config.extractValidUrl(event)!;
-        if (rule.provider === "Google Meet") {
+        if (rule?.provider === "Google Meet") {
           const tmp = new URL(url);
           tmp.searchParams.set("authuser", user.email);
           url = tmp.toString();
@@ -152,7 +152,7 @@ async function startWatching() {
       case "add": {
         const event = targetEvents.find((e) => e.id === p.id)!;
         let { url, rule } = config.extractValidUrl(event)!;
-        if (rule.provider === "Google Meet") {
+        if (rule?.provider === "Google Meet") {
           const tmp = new URL(url);
           tmp.searchParams.set("authuser", user.email);
           url = tmp.toString();
